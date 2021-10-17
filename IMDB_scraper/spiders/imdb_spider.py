@@ -30,15 +30,18 @@ class ImdbSpider(scrapy.Spider):
 
     def parse_full_credits(self, response):
         """
-        This parse method
+        This parse method starts on the cast and crew page and yields a scrapy.Request 
+        for every actor listed on the page. Only includes cast members.
         """
 
+        # Iterate through table of actors
         for i in range(len(response.css("table.cast_list td:not([class]) a"))):
             cast_page = response.css("table.cast_list td:not([class]) a")[i].attrib["href"] # Get cast member id
-            cast_page = response.url.rsplit("/", 4)[0] + cast_page # Specific cast member url
-            yield scrapy.Request(cast_page, callback = self.parse_actor_page)
+            cast_page = response.url.rsplit("/", 4)[0] + cast_page # Update url for each cast member
+            yield scrapy.Request(cast_page, callback = self.parse_actor_page) # Move to cast member page and run parse_actor_page
 
     def parse_actor_page(self, response):
+        
 
         for project in response.css("div.filmo-category-section")[0].css("b a::text"):
             actor_name = response.css("span.itemprop::text").get()
