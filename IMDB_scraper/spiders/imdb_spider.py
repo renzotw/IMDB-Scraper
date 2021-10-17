@@ -41,12 +41,17 @@ class ImdbSpider(scrapy.Spider):
             yield scrapy.Request(cast_page, callback = self.parse_actor_page) # Move to cast member page and run parse_actor_page
 
     def parse_actor_page(self, response):
+        """ 
+        This parse method starts on the page of an actor and extracts all of the projects 
+        that the actor has worked on. Then it yields a dictionary of the actor and the project title.
+        """
         
-
+        # Iterate through all of the projects
         for project in response.css("div.filmo-category-section")[0].css("b a::text"):
-            actor_name = response.css("span.itemprop::text").get()
-            movie_or_TV_name = project.get()
+            actor_name = response.css("span.itemprop::text").get() # Get actor name
+            movie_or_TV_name = project.get() # Get project title
 
+            # Yield results in a dictionary
             yield {
                 "actor" : actor_name,
                 "movie_or_TV_name" : movie_or_TV_name
