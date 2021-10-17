@@ -4,24 +4,34 @@
 import scrapy
 class ImdbSpider(scrapy.Spider):
     
+    # Name of spider
     name = 'imdb_spider'
 
+    # Starting point: Skyfall imdb url
     start_urls = ['https://www.imdb.com/title/tt1074638/']
 
     def parse(self, response):
+        """
+        This parse method starts on the home page of a movie's imdb page
+        and then navigates to the cast and crew page and runs the parse_full_credits method
 
+        """
+
+        # Find the cast and crew page
         next_page = response.css("li.ipc-inline-list__item a")[2].attrib["href"]
 
+        # If the cast and crew page exists, update the url, and move to it
         if next_page:
-            next_page = response.urljoin(next_page)
-            
-            # Where and what
-            yield scrapy.Request(next_page, callback = self.parse_full_credits)
+            next_page = response.urljoin(next_page) # Update url
+            yield scrapy.Request(next_page, callback = self.parse_full_credits) # Move to page and run parse_full_credits
 
 
 
 
     def parse_full_credits(self, response):
+        """
+        This parse method
+        """
 
         for i in range(len(response.css("table.cast_list td:not([class]) a"))):
             cast_page = response.css("table.cast_list td:not([class]) a")[i].attrib["href"] # Get cast member id
