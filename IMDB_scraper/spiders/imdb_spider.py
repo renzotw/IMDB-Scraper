@@ -19,17 +19,6 @@ class ImdbSpider(scrapy.Spider):
             yield scrapy.Request(next_page, callback = self.parse_full_credits)
 
 
-        #This works
-
-
-    #def parse_full_credits(self, response):
-         #page = response.url.split("/")[-1]
-         #filename = f"imdb-{page}.html"
-         #with open(filename, "wb") as f:
-            #f.write(response.body)
-
-
-
 
 
     def parse_full_credits(self, response):
